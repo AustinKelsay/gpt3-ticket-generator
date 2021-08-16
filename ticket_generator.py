@@ -1,10 +1,11 @@
 import os
 import openai
+import json
 from dotenv import load_dotenv 
 
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("GPT3_API_TOKEN")
 
 prompt = """IE: Please generate 5 new labeled tickets based off of these sample tickets - [{"TalkDesk - Unable to login", "text_b": "Login/Access Hi I believe my account was deactivated by accident. I've received a message stating that my email address is not found.", "priority": "urgent"},,
 {"text_a": "Increase order quantity from 50 to 100", "text_b": "We have sent 50 copies of \"Frank Calderoni: Upstanding book FY22\", SKU: 560210, to Jeanne Rotenberry, at 9:15 AM CST, on June 30, 2021. We need to increase this order from 50 units to 100 units. Can you update this or should we cancel and resubmit? This order requires 2-day shipping.", "priority": "urgent"},,
@@ -20,7 +21,7 @@ prompt = """IE: Please generate 5 new labeled tickets based off of these sample 
 {"text_a": "Wrong Email attached to eGift", "text_b": "I recently received a eGift card from someone. Unfortunately, they entered the wrong email address in your system. It looks like I have to verify my email to redeem it, but the system will not accept it because the emails do not match. Is there any way you guys can update the email address? It is only one letter off. I would like to be able to redeem it. Thank you" "priority": "high"},,
 {"text_a": "Someone has logged into my account", "text_b": "Hi, it appears someone may have gotten access to my account and sent an e-gift. Can you help me look into this?", "priority": "urgent"},,
 {"text_a": "Can't add new contact", "text_b": "Hi, I have a question about adding a new contact. Your UI is pretty confusing and I cant seem to naviagte it to add this new user", "priority": "normal"}]###
-IE: Please generate 150 new labeled tickets based off of these sample tickets - [{"text_a": "We received your cards to handout to guests inviti...", "text_b": "We received your cards to handout to guests inviting them to try TheDyrt.com. Thank you. But it made me curious, so I searched my park on your site. I own Escalante Cabins & RV Park. I have tried to update the email address multiple times. For the first year of business we were Grand Staircase Resort and used the email listed on your site. We changed our name to Escalante Cabins & RV Park years ago and our email is now escalantecabinsrvpark@gmail.com. Please update this information on your website. We can no longer access info@grandstaircaseresort.com. Thank you. Questions, please call 435-826-4433. Thanks.\n\n------------------\nSubmitted from: https://thedyrt.com/camping/utah/grand-staircase-resort-of-escalante", "label": "campground-partner"},
+IE: Please generate  new labeled tickets based off of these sample tickets - [{"text_a": "We received your cards to handout to guests inviti...", "text_b": "We received your cards to handout to guests inviting them to try TheDyrt.com. Thank you. But it made me curious, so I searched my park on your site. I own Escalante Cabins & RV Park. I have tried to update the email address multiple times. For the first year of business we were Grand Staircase Resort and used the email listed on your site. We changed our name to Escalante Cabins & RV Park years ago and our email is now escalantecabinsrvpark@gmail.com. Please update this information on your website. We can no longer access info@grandstaircaseresort.com. Thank you. Questions, please call 435-826-4433. Thanks.\n\n------------------\nSubmitted from: https://thedyrt.com/camping/utah/grand-staircase-resort-of-escalante", "label": "campground-partner"},
 {"text_a": "How do I update pricing? ", "text_b": "How do I update pricing? \n\n------------------\nSubmitted from: https://thedyrt.com/manage/portal/campground/bandon-wayside-motel-rv/listing/details", "label": "campground-partner"},
 {"text_a": "Hostinh", "text_b": "How do I post my cabins and RV spots on your app?\n\nSincerely, \n\nNigel Smedley\n(720)360-7770\nnigelasmedley@gmail.com\n\n--\nTo unsubscribe from this group and stop receiving emails from it, send an email to support+unsubscribe@thedyrt.com.", "label": "campground-partner"},
 {"text_a": "Help+with+RyeBeach+listing", "text_b": "Hello, \n\nI'm trying to post my cabin and RV spots on your app with no luck. Where is the host dashboard? \n\nNigel\n\n--\nTo unsubscribe from this group and stop receiving emails from it, send an email to support+unsubscribe@thedyrt.com.", "label": "campground-partner"},
@@ -93,7 +94,7 @@ response = openai.Completion.create(
   engine="davinci",
   prompt=prompt,
   temperature=0.3,
-  max_tokens=300,
+  max_tokens=2000,
   top_p=1.0,
   frequency_penalty=0.2,
   presence_penalty=0.0,
@@ -101,4 +102,6 @@ response = openai.Completion.create(
 )
 
 story = response['choices'][0]['text']
-print(story)
+
+with open('test_results') as f:
+    json.dump(story, f)
